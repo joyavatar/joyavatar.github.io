@@ -1,0 +1,515 @@
+<!doctype html>
+<html lang="en">
+
+
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <title>JoyAvatar</title>
+    <meta name="description" content="JoyAvatar: Unlocking Highly Expressive Avatars via Harmonized Text-Audio Conditioning">
+    <meta name="keywords" content="Audio–Visual Synchronization, Text Alignment, Video Avatar Generation">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="theme-color" content="#000000">
+    <link rel="shortcut icon" href="../image/favicon.ico" type="image/x-icon">
+    <style>
+
+
+            ::-webkit-scrollbar-track { background: #000; } ::-webkit-scrollbar { width: 5px; } ::-webkit-scrollbar-thumb { background-color: #666; } @font-face { font-family: 'Roboto'; font-style: normal; font-stretch: 100%; font-display: block; font-weight: 300 700; src: url(v1_5/roboto.woff2) format("woff2"); unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD; } * { box-sizing: border-box; } video { background-color: #000; } #latent-interpolation video { aspect-ratio: 1; } img { background-color: #111; aspect-ratio: 1; } body {background-color: #000; color: #fff; font-family: "Roboto", sans-serif; padding: 0; margin: 0; }
+a{color:#999 !important;text-decoration:none !important}a:hover{color:#999 !important}a:visited{color:#999 !important}
+    pre, code{color:#999 !important}
+    #contributors strong{color:#fff !important;font-weight:700 !important}
+    .content p { color: #999 !important; } #home { position: absolute; top: 20px; left: max(calc(50vw - 1920px/2 + 192px), 10%); } #logo { width: 40px; height: 40px; position: fixed; top: 12px; right: max(calc(50vw - 1920px/2 + 192px), 10%); z-index: 1001; } #intro { padding: 140px 0 80px; } #intro h1 { font-size: 80px; font-weight: 300; margin: 20px 0; } #intro h2 { margin: 20px 0 40px; font-weight: 300; color: #ccc; } #intro strong { font-weight: 700; } #intro h2 strong { color: #fff; } section { max-width: 1920px; margin: 0 auto; } .content { padding: 0 10%; } .button { padding-right: 16px; border-radius: 8px; color: #fff; background-color: #333; cursor: pointer; transition: background-color .5s; text-decoration: none; margin-right: 8px; margin-bottom: 8px; display: inline-flex; align-items: center; overflow: hidden; } .button .icon { box-sizing: content-box; padding: 8px; background-color: #ccc; margin-right: 16px; transition: background-color .5s; } .button:hover { background-color: #fff; color: #000; } .button:hover .icon { background-color: #fff; } section { margin-top: 100px; } section:first-of-type { margin-top: 0; } .title { background-color: #000; position: sticky; top: 0; padding: 20px 10%; font-size: 20px; font-weight: 600; z-index: 1000; min-height: 60px; box-sizing: border-box; } .description { padding: 0 10% 20px; color: #999; line-height: 25px; font-weight: 300; } .highlight { color: #fff; font-weight: 500; } .flex-row { display: flex; column-gap: 5px; flex-wrap: nowrap; justify-content: space-between; padding: 0 5px 5px; } .flex-row > div { flex-grow: 1; flex-basis: 0; position: relative; } .flex > div { width: calc(100% / 3 - 5px * 2 / 3); margin-top: 2.5px; margin-bottom: 2.5px; position: relative; } .flex { display: flex; flex-wrap: wrap; justify-content: space-between; padding: 0 5px; } .prompt-wrap { position: relative; } .flex-2 { justify-content: center; column-gap: 5px; } .flex-2 > div { width: calc(100% / 2 - 5px / 2); min-width: calc(100% / 3 - 5px * 2 / 3); max-width: calc(100vh - 200px); } video, img { width: 100%; } .prompt { max-width: calc(100% - 20px); position: absolute; background: #00000080; color: #ffffffe6; font-size: 10px; backdrop-filter: blur(10px); bottom: 10px; left: 10px; padding: 5px 10px; border-radius: 15px; opacity: 0; pointer-events: none; transition: opacity .5s; box-sizing: border-box; } .full-screen-button { width: 24px; height: 24px; border-radius: 12px; position: absolute; top: 10px; right: 10px; background-color: #00000080; backdrop-filter: blur(10px); background-size: 12px; background-repeat: no-repeat; background-position: center; opacity: 0; pointer-events: none; transition: opacity .5s; cursor: pointer; } .flex-very-compact .full-screen-button { width: 100%; height: 100%; top: 0; right: 0; border-radius: 0; } .margin-top { margin-top: 50px; } .ruler { text-align: center; position: sticky; top: 60px; z-index: 999; background-color: #000; color: #999; padding: 5px 0; } .ruler > div { width: 100%; overflow: hidden; } .selected { box-shadow: 0 0 0 5px #fff; } #footer { background: linear-gradient(transparent, #000 100px); padding-top: 100px; box-sizing: content-box; z-index: 10000; position: relative; } #footer #links { position: absolute; bottom: 16px; width: 100%; height: 50px; margin-top: 80px; display: flex; align-items: center; justify-content: center; gap: 8px; opacity: 0; } #footer #links[visible] { transition: opacity .5s; transition-delay: .5s; opacity: 1; } #contributors { min-height: 100vh; display: flex; justify-content: center; align-items: center; text-align: center; font-size: 18px; font-weight: 200; } #contributors strong { color: #999; font-weight: 200; margin-top: 40px; margin-bottom: 20px; display: block; } #contributors a { display: block; padding: 3px 20px; border-radius: 100px; background-color: #000; transition: background-color .2s; text-decoration: none; color: #fff; } #contributors a:hover { background: #222; } table { width: calc(80% + 24px); margin: 0 auto; border-collapse: collapse; } thead { color: #ccc; } thead tr { position: sticky; top: 60px; background: #000; } tr { border-bottom: 1px solid #333; transition: background .5s; } td { padding: 10px 12px; } td:first-child { line-break: anywhere; } table a { display: block; width: 32px; height: 24px; background-position: center no-repeat; } .outer-wrap { display: flex; justify-content: center; } .nav-button { border-radius: 8px; color: #fff; background-color: #333; padding: 8px 12px 8px 8px; text-decoration: none; opacity: .5; display: flex; align-items: center; justify-content: center; gap: 8px; transition: opacity .2s; } .nav-button:hover { opacity: 1; } @media (hover: hover) { .prompt-wrap:hover .prompt, .full-screen-wrap:hover .full-screen-button { opacity: 1; pointer-events: all; } #contributors a:hover { background: #222; } tbody tr:hover { background: #222; } } @media (max-width: 640px) { #intro h1 { font-size: 50px; } #intro h2 { font-size: 20px; } .ruler { font-size: 10px; } } @media (max-width: 512px) { .content { padding: 0 12px; } .description { padding: 0 12px 20px; } .title { padding: 20px 12px; } #home { left: 12px; } #logo { right: 12px; position: absolute; } .ruler-tight { font-size: 6px; column-gap: 0; } .title-long { font-size: 16px; } .flex-compact .full-screen-button { width: 100%; height: 100%; top: 0; right: 0; border-radius: 0; } table { width: 100%; font-size: 12px; } td { padding: 10px 4px; } td:first-child { padding-left: 12px; } td:last-child { padding-right: 12px; } }
+    </style>
+    
+</head>
+<body>
+
+        <!-- <a href="#core-capabilities" class="nav-link" style="color: white; text-decoration: none; opacity: 0.7; transition: opacity 0.2s; writing-mode: horizontal-tb; text-orientation: mixed;">Core Capabilities</a>            <a href="#context-aware-audio-driven-animation" class="nav-link" style="color: white; text-decoration: none; opacity: 0.7; transition: opacity 0.2s; writing-mode: horizontal-tb; text-orientation: mixed;">Audio-Driven Animation</a>            <a href="#text-guided-multimodal-animation" class="nav-link" style="color: white; text-decoration: none; opacity: 0.7; transition: opacity 0.2s; writing-mode: horizontal-tb; text-orientation: mixed;">Multimodal Animation</a>            <a href="#cinematic-performances" class="nav-link" style="color: white; text-decoration: none; opacity: 0.7; transition: opacity 0.2s; writing-mode: horizontal-tb; text-orientation: mixed;">Cinematic Performances</a>            <a href="#rhythmic-performances" class="nav-link" style="color: white; text-decoration: none; opacity: 0.7; transition: opacity 0.2s; writing-mode: horizontal-tb; text-orientation: mixed;">Rhythmic Performances</a>            <a href="#diversity-and-robustness" class="nav-link" style="color: white; text-decoration: none; opacity: 0.7; transition: opacity 0.2s; writing-mode: horizontal-tb; text-orientation: mixed;">Diversity</a>            <a href="#multi-person-scene-performance" class="nav-link" style="color: white; text-decoration: none; opacity: 0.7; transition: opacity 0.2s; writing-mode: horizontal-tb; text-orientation: mixed;">Multi-Person Scene</a> -->
+        <div class="side-nav" style="position: fixed; top: 20px; left: 50%; transform: translateX(-55%); z-index: 1000; display: flex; flex-direction: row; gap: 20px; padding: 12px;">                    </div>        <style>            .nav-link:hover {                opacity: 1;            }            @media (max-width: 768px) {                .side-nav {                    left: 10px;                }                .nav-link {                    font-size: 12px;                }            }            @media (max-width: 512px) {                .side-nav {                    display: none;                }            }        </style>        <script>
+            // 下拉菜单交互功能
+            document.addEventListener('DOMContentLoaded', function() {
+                const navButton = document.getElementById('nav-button');
+                const dropdownMenu = document.getElementById('dropdown-menu');
+
+                navButton.addEventListener('click', function() {
+                    dropdownMenu.style.display = dropdownMenu.style.display === 'block' ? 'none' : 'block';
+                });
+
+                // 点击其他地方关闭下拉菜单
+                document.addEventListener('click', function(event) {
+                    if (!navButton.contains(event.target) && !dropdownMenu.contains(event.target)) {
+                        dropdownMenu.style.display = 'none';
+                    }
+                });
+
+                // 导航链接悬停效果
+                const navLinks = document.querySelectorAll('.nav-link');
+                navLinks.forEach(link => {
+                    link.addEventListener('mouseover', function() {
+                        this.style.opacity = '1';
+                    });
+                    link.addEventListener('mouseout', function() {
+                        this.style.opacity = '0.7';
+                    });
+                });
+
+                // 下拉菜单项悬停效果
+                const dropdownItems = document.querySelectorAll('.dropdown-item');
+                dropdownItems.forEach(item => {
+                    item.addEventListener('mouseover', function() {
+                        this.style.backgroundColor = '#555';
+                    });
+                    item.addEventListener('mouseout', function() {
+                        this.style.backgroundColor = 'transparent';
+                    });
+                });
+            });
+        </script>
+        <style>
+        .prompt-wrap {
+            position: relative;
+        }
+        .prompt-wrap video {
+            width: 100%;
+        }
+        /* 隐藏默认控件 */
+        .prompt-wrap video::-webkit-media-controls {
+            display: none !important;
+        }
+        /* 鼠标悬停时显示控件 */
+        .prompt-wrap:hover video::-webkit-media-controls {
+            display: flex !important;
+        }
+    </style>
+    <div id="intro">
+        <div class="content">
+            <div style="text-align: center;">
+            <!-- <img src="vis/JoyAI_logo_trim.png" alt="JoyAI Logo" style="height: 80px; width: 200px; margin-bottom: 1px;" /> -->
+            <!-- <h1 style="font-size: 5rem; color: #e0e0e0; text-shadow: 0 0 8px rgba(224, 224, 224, 0.3);"><strong>JoyAvatar</strong></h1> -->
+            <h2 style="font-size: 3.0rem; font-weight:700; color: #e0e0e0; text-shadow: 0 0 8px rgba(224, 224, 224, 0.3);">JoyAvatar: Unlocking Highly Expressive Avatars via Harmonized Text-Audio Conditioning</h2>
+            <div style="margin-top: 30px;"></div>
+
+
+            <span style="opacity: 0.6;">
+                <a>Ruikui Wang</a>,
+                <a>Jinheng Feng</a>,
+                <a>Lang Tian</a>,
+                <a>Huaishao Luo</a>,
+                <a>Chaochao Li</a>,
+                <a>Liangbo Zhou</a>,
+                <div></div>
+                <a>Huan Zhang<sup>†</sup></a>,
+                <a>Youzheng Wu</a>,
+                <a>Xiaodong He</a>
+            </span>
+
+            <div style="margin-top: 10px;"></div>
+
+            <a style="opacity: 0.6;"><sup>†</sup>Project lead</a>
+                
+            <div style="margin-top: 15px;"></div>
+            <span style="opacity: 0.6;"><a>JD Technology</a></span>
+            
+            <div style="margin-top: 10px;"></div>
+            <a class="button" href="https://arxiv.org/abs/2602.00702" target="_blank" rel="noopener noreferrer" style="border: 2px solid #000; padding: 10px 20px; text-align: center; display: inline-block;">
+                    <span style="text-decoration: underline; color: rgb(158, 157, 157);">
+                        Research Paper
+                </span>
+            </a>
+        </div>
+    </div>
+
+
+<!-- 论文摘要 -->
+<div style="max-width: 1200px; margin: 40px auto; padding: 0 20px; text-align: left;">
+    <h3 style="color: #fff; font-size: 20px; margin-bottom: 12px;">Abstract</h3>
+    <p style="color: #ddd; line-height: 1.6; font-size: 15px;">
+        Existing video avatar models have demonstrated impressive capabilities in scenarios such as talking, public speaking, and singing. However, the majority of these methods exhibit limited alignment with respect to text instructions, particularly when the prompts involve complex elements including large full-body movement, dynamic camera trajectory, background transitions, or human-object interactions. To break out this limitation, we present JoyAvatar, a framework capable of generating long duration avatar videos, featuring two key technical innovations. Firstly, we introduce a twin-teacher enhanced training algorithm that enables the model to transfer inherent text-controllability from the foundation model while simultaneously learning audio–visual synchronization. Secondly, during training, we dynamically modulate the strength of multi-modal conditions (e.g., audio and text) based on the distinct denoising timestep, aiming to mitigate conflicts between the heterogeneous conditioning signals. These two key designs serve to substantially expand the avatar model's capacity to generate natural, temporally coherent full-body motions and dynamic camera movements as well as preserve the basic avatar capabilities, such as accurate lip-sync and identity consistency. GSB evaluation results demonstrate that our JoyAvatar model outperforms the state-of-the-art models such as Omnihuman-1.5 and KlingAvatar 2.0. Moreover, our approach enables complex applications including multi-person dialogues and non-human subjects role-playing.    </p>
+</div>
+
+<!-- 横屏框架图（重点优化宽图显示） -->
+<div style="text-align: center; margin: 10px auto; padding: 0 10px;">
+    <figure style="display: inline-block; border: 1px solid #333; border-radius: 8px; overflow: hidden; box-shadow: 0 6px 20px rgba(0,0,0,0.6); background: #000;">
+        <!-- 注意：max-width 设为 95% 或 100%，但限制最大宽度防止过大 -->
+        <img src="vis/framework.png"
+             alt="JoyAvatar dual-system architecture (landscape layout)"
+             style="width: 1000px; max-width: 1200px; height: 400px; display: block; min-height: 3px;">
+        <figcaption style="font-size: 14px; color: #aaa; background-color: #111; padding: 10px; margin: 0;">
+            Figure 1: Overview of our JoyAvatar pretraining pipeline.
+        </figcaption>
+    </figure>
+</div>
+<div style="text-align: center; margin: -5px auto; padding: 0 10px;">
+    <figure style="display: inline-block; border: 1px solid #333; border-radius: 8px; overflow: hidden; box-shadow: 0 6px 20px rgba(0,0,0,0.6); background: #000;">
+        <!-- 注意：max-width 设为 95% 或 100%，但限制最大宽度防止过大 -->
+        <img src="vis/tdmd.png"
+             alt="JoyAvatar dual-system architecture (landscape layout)"
+             style="width: 1000px; max-width: 1200px; height: 400px; display: block; min-height: 3px;">
+        <figcaption style="font-size: 14px; color: #aaa; background-color: #111; padding: 10px; margin: 0;">
+            Figure 2: Pipeline of Twin-Teacher Enhanced DMD Post-Training.
+        </figcaption>
+    </figure>
+</div>
+
+    <section id="Introducing JoyAvatar" style="margin-top: 100px;">
+        <div class="title">Dynamic Camera Trajectory</div>
+        <div class="description">
+            JoyAvatar can handle cinematographic camera motion, encompassing rotations, zooms, and dynamic following of human subject.
+            <div style="margin-top: 5px;"></div>
+        </div>
+
+        <div class="flex-row">
+            <div class="prompt-wrap" style="position: relative; display: inline-block;">
+                <video playsinline controls  loop  preload="none" poster="vis/future-8.png" src="vis/future-8.mp4"></video>
+                <div class="prompt" style="font-size: 14px; position: absolute; height: 5%; top: 5px; background-color: rgba(0, 0, 0, 0.3); color: white; padding: 3px 8px; border-radius: 4px;">
+                    180-degree orbiting shot. The robot’s head tilts mechanically 90 degrees to the right, raises a finger to perform a distinct tapping gesture on an invisible virtual screen in mid-air.
+                </div>
+            </div>
+
+            <div class="prompt-wrap" style="position: relative; display: inline-block;">
+                <video playsinline controls  loop  preload="none" poster="vis/future-9.png" src="vis/future-9.mp4"></video>
+                <div class="prompt" style="font-size: 14px; position: absolute; height: 5%; top: 5px; background-color: rgba(0, 0, 0, 0.3); color: white; padding: 3px 8px; border-radius: 4px;">
+                    The camera slowly pulls back as the speaker, with a solemn expression, looks directly into the lens.
+                </div>
+            </div>
+        </div>
+
+        <div class="flex-row">
+            <div class="prompt-wrap">
+                <video playsinline controls  loop  preload="none" poster="vis/sucai-04.png" src="vis/sucai-04.mp4"></video>
+                <div class="prompt" style="font-size: 14px; position: absolute; height: 7%; top: 5px; background-color: rgba(0, 0, 0, 0.3); color: white; padding: 3px 8px; border-radius: 4px;">
+                    An old man holds his chest in pain as the camera pushes forward.
+                </div>
+            </div>
+            <div class="prompt-wrap">
+                <video playsinline controls  loop  preload="none" poster="vis/sucai-03.png" src="vis/sucai-03.mp4"></video>
+                <div class="prompt" style="font-size: 14px; position: absolute; height: 7%; top: 5px; background-color: rgba(0, 0, 0, 0.3); color: white; padding: 3px 8px; border-radius: 4px;">
+                    Man talking, standing, walking forward; camera tracks back. Holds a calm look at the camera for his final words.
+                </div>
+            </div>
+
+            <div class="prompt-wrap">
+                <video playsinline controls  loop  preload="none" poster="vis/future-6.png" src="vis/future-6.mp4"></video>
+                <div class="prompt" style="font-size: 14px; position: absolute; height: 7%; top: 5px; background-color: rgba(0, 0, 0, 0.3); color: white; padding: 3px 8px; border-radius: 4px;">
+                    Fixed shot, blurred background. Pixie: anxious -> relaxed. Ears twitch while speaking; suddenly covers mouth with hands, eyes roll up; then releases, pats chest; finally leans in for a close-up funny face.
+                </div>
+            </div>
+            <div class="prompt-wrap" style="flex-grow: 0.56; height: 100%;">
+                <video playsinline controls  loop  preload="none" poster="vis/sucai-114.png" src="vis/sucai-114.mp4"></video>
+                <div class="prompt" style="font-size: 14px; position: absolute; height: 7%; top: 5px; background-color: rgba(0, 0, 0, 0.3); color: white; padding: 3px 8px; border-radius: 4px;">
+                    A woman singing while walking the runway, under flashing, vibrant, multicolored lights.
+                </div>
+            </div>
+
+        </div>
+    </section>
+
+    <section id="Complex Full-body Motion" style="margin-top: 150px;">
+        <div class="title">Complex Full-body Motion</div>
+        <div class="description">
+            JoyAvatar is capable of synthesizing a range of complex human motions, including but not limited to walking, running, dancing, and object manipulation.
+            <div style="margin-top: 5px;"></div>
+        </div>
+
+        <div class="flex-row">
+            <div class="prompt-wrap" style="position: relative; display: inline-block;">
+                <video playsinline controls  loop  preload="none" poster="vis/sucai-121.png" src="vis/sucai-121.mp4"></video>
+                <div class="prompt" style="font-size: 14px; position: absolute; height: 5%; top: 5px; background-color: rgba(0, 0, 0, 0.3); color: white; padding: 3px 8px; border-radius: 4px;">
+                    A young man lifts a dumbbel and moves from indoors to outdoors while working out.
+                </div>
+            </div>
+
+            <div class="prompt-wrap" style="position: relative; display: inline-block;">
+                <video playsinline controls  loop  preload="none" poster="vis/sucai-40.png" src="vis/sucai-40.mp4"></video>
+                <div class="prompt" style="font-size: 14px; position: absolute; height: 5%; top: 5px; background-color: rgba(0, 0, 0, 0.3); color: white; padding: 3px 8px; border-radius: 4px;">
+                    A female warrior is aiming and firing, then suddenly stands up, raising her gun as she charges forward.
+                </div>
+            </div>
+
+            <div class="prompt-wrap" style="position: relative; display: inline-block;">
+                <video playsinline controls  loop  preload="none" poster="vis/sucai-49.png" src="vis/sucai-49.mp4"></video>
+                <div class="prompt" style="font-size: 14px; position: absolute; height: 5%; top: 5px; background-color: rgba(0, 0, 0, 0.3); color: white; padding: 3px 8px; border-radius: 4px;">
+                    A woman with a handbag, wearing a radiant and confident expression, walks forward while talking animatedly.
+                </div>
+            </div>
+
+            <div class="prompt-wrap" style="position: relative; display: inline-block;">
+                <video playsinline controls  loop  preload="none" poster="vis/sucai-74.png" src="vis/sucai-74.mp4"></video>
+                <div class="prompt" style="font-size: 14px; position: absolute; height: 5%; top: 5px; background-color: rgba(0, 0, 0, 0.3); color: white; padding: 3px 8px; border-radius: 4px;">
+                    A young man swings his sword with practiced skill, cutting a heroic and commanding presence.
+                </div>
+            </div>
+            <div class="prompt-wrap" style="position: relative; display: inline-block;">
+                <video playsinline controls  loop  preload="none" poster="vis/sucai-62.png" src="vis/sucai-62.mp4"></video>
+                <div class="prompt" style="font-size: 14px; position: absolute; height: 5%; top: 5px; background-color: rgba(0, 0, 0, 0.3); color: white; padding: 3px 8px; border-radius: 4px;">
+                    A young man sings while walking slowly forward, with the camera steadily tracking him.
+                </div>
+            </div>
+
+        </div>
+
+        <div class="flex-row">
+            <div class="prompt-wrap">
+                <video playsinline controls  loop  preload="none" poster="vis/sucai-running.png" src="vis/sucai-running.mp4"></video>
+                <div class="prompt" style="font-size: 14px; position: absolute; height: 7%; top: 5px; background-color: rgba(0, 0, 0, 0.3); color: white; padding: 3px 8px; border-radius: 4px;">
+                    A character is running with a smile, then turns to speak directly to the camera with a natural ease.
+                </div>
+            </div>
+
+            <div class="prompt-wrap">
+                <video playsinline controls  loop  preload="none" poster="vis/sucai-120.png" src="vis/sucai-120.mp4"></video>
+                <div class="prompt" style="font-size: 14px; position: absolute; height: 7%; top: 5px; background-color: rgba(0, 0, 0, 0.3); color: white; padding: 3px 8px; border-radius: 4px;">
+                    The girl picks up the chocolate box, shows it to the viewer, then takes out a piece of chocolate and eats it.
+                </div>
+            </div>
+            <div class="prompt-wrap">
+                <video playsinline controls  loop  preload="none" poster="vis/sucai-91.png" src="vis/sucai-91.mp4"></video>
+                <div class="prompt" style="font-size: 14px; position: absolute; height: 7%; top: 5px; background-color: rgba(0, 0, 0, 0.3); color: white; padding: 3px 8px; border-radius: 4px;">
+                    A little girl, holding a microphone, sings cheerfully while bouncing and dancing joyfully.
+                </div>
+            </div>
+            <div class="prompt-wrap">
+                <video playsinline controls  loop  preload="none" poster="vis/sucai-24.png" src="vis/sucai-24.mp4"></video>
+                <div class="prompt" style="font-size: 14px; position: absolute; height: 7%; top: 5px; background-color: rgba(0, 0, 0, 0.3); color: white; padding: 3px 8px; border-radius: 4px;">
+                    The girl in the frame stands up, singing as she walks forward, her skirt swirling as she moves.
+                </div>
+            </div>
+            <div class="prompt-wrap">
+                <video playsinline controls  loop  preload="none" poster="vis/sucai-80.png" src="vis/sucai-80.mp4"></video>
+                <div class="prompt" style="font-size: 14px; position: absolute; height: 7%; top: 5px; background-color: rgba(0, 0, 0, 0.3); color: white; padding: 3px 8px; border-radius: 4px;">
+                    An elegant elder takes a drink from his wine flask while reciting poetry, all beneath a bright moon and starry sky, overlooking a vibrant, lantern-lit town below.
+                </div>
+            </div>
+        </div>
+    </section>
+
+
+    <section id="Human-Object Interactions (HOI)" style="margin-top: 150px;">
+        <div class="title">Human-Object Interactions (HOI)</div>
+        <div class="description">
+            JoyAvatar can generate scenes involving complex human-object interactions and inter-object interactions.
+            <div style="margin-top: 5px;"></div>
+        </div>
+
+        <div class="flex-row">
+            <div class="prompt-wrap" style="position: relative; display: inline-block;">
+                <video playsinline controls  loop  preload="none" poster="vis/sucai-52.png" src="vis/sucai-52.mp4"></video>
+                <div class="prompt" style="font-size: 14px; position: absolute; height: 5%; top: 5px; background-color: rgba(0, 0, 0, 0.3); color: white; padding: 3px 8px; border-radius: 4px;">
+                    A smiling farmer watches as his dog walks up and rubs against his leg. He bends down to pet the dog, as the sun rises slowly in the background.
+                </div>
+            </div>
+
+            <div class="prompt-wrap" style="position: relative; display: inline-block;">
+                <video playsinline controls  loop  preload="none" poster="vis/sucai-84.png" src="vis/sucai-84.mp4"></video>
+                <div class="prompt" style="font-size: 14px; position: absolute; height: 5%; top: 5px; background-color: rgba(0, 0, 0, 0.3); color: white; padding: 3px 8px; border-radius: 4px;">
+                    A little fairy in the scene is singing, when suddenly a blue fairy appears, and the two fairies then sing together.
+                </div>
+            </div>
+
+            <div class="prompt-wrap" style="position: relative; display: inline-block;">
+                <video playsinline controls  loop  preload="none" poster="vis/sucai-76.png" src="vis/sucai-76.mp4"></video>
+                <div class="prompt" style="font-size: 14px; position: absolute; height: 5%; top: 5px; background-color: rgba(0, 0, 0, 0.3); color: white; padding: 3px 8px; border-radius: 4px;">
+                    A little girl is first singing with a beaming smile, then she picks up a camera from the table, points it toward the viewer, and the flash goes off.
+                </div>
+            </div>
+
+            <div class="prompt-wrap" style="position: relative; display: inline-block;">
+                <video playsinline controls  loop  preload="none" poster="vis/sucai-123.png" src="vis/sucai-123.mp4"></video>
+                <div class="prompt" style="font-size: 14px; position: absolute; height: 5%; top: 5px; background-color: rgba(0, 0, 0, 0.3); color: white; padding: 3px 8px; border-radius: 4px;">
+                    A woman stands indoors, speaking to the camera. She begins by picking up a vase from a cabinet, then gazes at it contemplatively, and finally places it on a chair within the scene. (Keep the character fully in frame throughout.).
+                </div>
+            </div>
+            <div class="prompt-wrap" style="position: relative; display: inline-block;">
+                <video playsinline controls  loop  preload="none" poster="vis/sucai-63.png" src="vis/sucai-63.mp4"></video>
+                <div class="prompt" style="font-size: 14px; position: absolute; height: 5%; top: 5px; background-color: rgba(0, 0, 0, 0.3); color: white; padding: 3px 8px; border-radius: 4px;">
+                    A puppy barks, gets up, and walks. Another puppy joins. A friendly meeting, then they walk on together..
+                </div>
+            </div>
+            <div class="prompt-wrap" style="position: relative; display: inline-block;">
+                <video playsinline controls  loop  preload="none" poster="vis/sucai-95.png" src="vis/sucai-95.mp4"></video>
+                <div class="prompt" style="font-size: 14px; position: absolute; height: 5%; top: 5px; background-color: rgba(0, 0, 0, 0.3); color: white; padding: 3px 8px; border-radius: 4px;">
+                    A Halloween doll is singing. Suddenly, a pink doll appears and joins in the song.
+                </div>
+            </div>
+        </div>
+
+    </section>
+
+    <section id="Non-Human Subjects" style="margin-top: 150px;">
+        <div class="title">Diverse Input</div>
+        <div class="description">
+            Despite being trained solely on real human data, JoyAvatar demonstrates generalization by successfully animating a variety of non-human subjects, including cartoons, dolls, and other stylized avatars.
+            <div style="margin-top: 5px;"></div>
+        </div>
+
+        <div class="flex-row">
+            <div class="prompt-wrap" style="flex-grow: 1.9; height: 100%;">
+                <video playsinline controls  loop  preload="none" poster="vis/sucai-09.png" src="vis/sucai-09.mp4"></video>
+                <div class="prompt" style="font-size: 14px; position: absolute; height: 5%; top: 5px; background-color: rgba(0, 0, 0, 0.3); color: white; padding: 3px 8px; border-radius: 4px;">
+                    A kitten in front of the pyramids, having fun and talking.
+                </div>
+            </div>
+            <div class="prompt-wrap" style="flex-grow: 0.8; height: 100%;">
+                <video playsinline controls  loop  preload="none" poster="vis/sucai-77.png" src="vis/sucai-77.mp4"></video>
+                <div class="prompt" style="font-size: 14px; position: absolute; height: 5%; top: 5px; background-color: rgba(0, 0, 0, 0.3); color: white; padding: 3px 8px; border-radius: 4px;">
+                    A lion cub rides a scooter on a road, wearing a happy expression, with the roadside lined with blooming flowers.
+                </div>
+            </div>
+            <div class="prompt-wrap" style="flex-grow: 0.8; height: 100%;">
+                <video playsinline controls  loop  preload="none" poster="vis/sucai-36.png" src="vis/sucai-36.mp4"></video>
+                <div class="prompt" style="font-size: 14px; position: absolute; height: 5%; top: 5px; background-color: rgba(0, 0, 0, 0.3); color: white; padding: 3px 8px; border-radius: 4px;">
+                    Pikachu is singing and dancing, full of lively gestures.
+                </div>
+            </div>
+            <div class="prompt-wrap" style="flex-grow: 0.8; height: 100%;">
+                <video playsinline controls  loop  preload="none" poster="vis/sucai-53.png" src="vis/sucai-53.mp4"></video>
+                <div class="prompt" style="font-size: 14px; position: absolute; height: 7%; top: 5px; background-color: rgba(0, 0, 0, 0.3); color: white; padding: 3px 8px; border-radius: 4px;">
+                    A pea-shaped little sprite is talking, while nodding and waving.
+                </div>
+            </div>
+            <div class="prompt-wrap" style="flex-grow: 1.067; height: 100%;">
+                <video playsinline controls  loop  preload="none" poster="vis/39.png" src="vis/39.mp4"></video>
+                <div class="prompt" style="font-size: 14px; position: absolute; height: 5%; top: 5px; background-color: rgba(0, 0, 0, 0.3); color: white; padding: 3px 8px; border-radius: 4px;">
+                    No prompts.
+                </div>
+            </div>
+        </div>
+
+        <div class="flex-row">
+            <div class="prompt-wrap" style="flex-grow: 0.7; height: 100%;">
+                <video playsinline controls  loop  preload="none" poster="vis/sucai-32.png" src="vis/sucai-32.mp4"></video>
+                <div class="prompt" style="font-size: 14px; position: absolute; height: 7%; top: 5px; background-color: rgba(0, 0, 0, 0.3); color: white; padding: 3px 8px; border-radius: 4px;">
+                    An animal singing; twinkling eyes, twitching whiskers, paws kneading the air. An adorable little performer.
+                </div>
+            </div>
+
+            <div class="prompt-wrap" style="flex-grow: 0.7; height: 100%;">
+                <video playsinline controls  loop  preload="none" poster="vis/sucai-98.png" src="vis/sucai-98.mp4"></video>
+                <div class="prompt" style="font-size: 14px; position: absolute; height: 7%; top: 5px; background-color: rgba(0, 0, 0, 0.3); color: white; padding: 3px 8px; border-radius: 4px;">
+                    A polar bear is singing and playing the guitar.
+                </div>
+            </div>
+            <div class="prompt-wrap" style="flex-grow: 0.7; height: 100%;">
+                <video playsinline controls  loop  preload="none" poster="vis/sucai-50.png" src="vis/sucai-50.mp4"></video>
+                <div class="prompt" style="font-size: 14px; position: absolute; height: 7%; top: 5px; background-color: rgba(0, 0, 0, 0.3); color: white; padding: 3px 8px; border-radius: 4px;">
+                    A dog, wagging its tail, approaches a nearby purple flower and sniffs at it.
+                </div>
+            </div>
+            <div class="prompt-wrap" style="flex-grow: 0.7; height: 100%;">
+                <video playsinline controls  loop  preload="none" poster="vis/sucai-96.png" src="vis/sucai-96.mp4"></video>
+                <div class="prompt" style="font-size: 14px; position: absolute; height: 7%; top: 5px; background-color: rgba(0, 0, 0, 0.3); color: white; padding: 3px 8px; border-radius: 4px;">
+                    A woman is singing.
+                </div>
+            </div>
+            <div class="prompt-wrap" style="flex-grow: 2.2; height: 100%;">
+                <video playsinline controls  loop  preload="none" poster="vis/56.png" src="vis/56.mp4"></video>
+                <div class="prompt" style="font-size: 14px; position: absolute; height: 5%; top: 5px; background-color: rgba(0, 0, 0, 0.3); color: white; padding: 3px 8px; border-radius: 4px;">
+                    No prompts.
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="Multi-Talk Demonstration" style="margin-top: 150px;">
+        <div class="title">Multi-Talk Demonstration</div>
+        <div class="description">
+            JoyAvatar is capable of modeling dialogues involving multiple characters, ensuring that their facial expressions and hand motions are dynamically aligned with the context of conversation.
+            <div style="margin-top: 5px;"></div>
+        </div>
+
+        <div class="flex-row">
+
+            <div class="prompt-wrap">
+                <video playsinline controls  loop  preload="none" poster="vis/multi-talk-02.png" src="vis/multi-talk-02.mp4"></video>
+            </div>
+            <div class="prompt-wrap">
+                <video playsinline controls  loop  preload="none" poster="vis/multi-talk-01.png" src="vis/multi-talk-01.mp4"></video>
+            </div>
+        </div>
+
+        <div class="flex-row">
+
+            <div class="prompt-wrap">
+                <video playsinline controls  loop  preload="none" poster="vis/multi-talk-06.png" src="vis/multi-talk-06.mp4"></video>
+            </div>
+            <div class="prompt-wrap">
+                <video playsinline controls  loop  preload="none" poster="vis/multi-talk-07.png" src="vis/multi-talk-07.mp4"></video>
+            </div>
+            <div class="prompt-wrap">
+                <video playsinline controls  loop  preload="none" poster="vis/multi-talk-08.png" src="vis/multi-talk-08.mp4"></video>
+            </div>
+            <div class="prompt-wrap">
+                <video playsinline controls  loop  preload="none" poster="vis/multi-talk-09.png" src="vis/multi-talk-09.mp4"></video>
+            </div>
+        </div>
+
+    </section>
+
+    <section id="Long-Duration Video Generation" style="margin-top: 150px;">
+        <div class="title">Long-Duration Video Generation</div>
+        <div class="description">
+            JoyAvatar can efficiently support minute-level avatar video generation.
+            <div style="margin-top: 5px;"></div>
+        </div>
+
+        <div class="flex-row">
+
+            <div class="prompt-wrap">
+                <video playsinline controls  loop  preload="none" poster="vis/woman-singing.png" src="vis/woman-singing.mp4"></video>
+            </div>
+            <div class="prompt-wrap">
+                <video playsinline controls  loop  preload="none" poster="vis/man-talking.png" src="vis/man-talking.mp4"></video>
+            </div>
+        </div>
+    </section>
+
+    <section id="ethical-considerations" style="margin-top: 50px;">
+        <div class="title">Ethical Considerations</div>
+        <div class="description">
+            The demo assets (images and audios) originate either from public sources or are AIGC model generated, serving the sole purpose of illustrating the capabilities of our model. The generated content is for academic use only and commercial use is not permitted.
+            If there are any concerns, please contact us (linke.jason@jd.com) and we will delete it in time. The template for this webpage is adapted from <a href="https://omnihuman-lab.github.io/"><strong>Omnihuman Series</strong> </a>. Special thanks to the author for releasing this wonderful template.
+        </div>
+
+    </section>
+
+        <section id="BibTeX" style="margin-top: 50px; position: relative;">
+        <div class="title">BibTeX</div>
+        <div class="description">
+            If you find this project useful for your research, please consider citing:
+        </div>
+         <pre style="text-align: left;margin-left: 10%; margin-top: -30px;width: 50%;"><code>
+@misc{wang2026joyavatarunlockinghighlyexpressive,
+    title={JoyAvatar: Unlocking Highly Expressive Avatars via Harmonized Text-Audio Conditioning}, 
+    author={Ruikui Wang and Jinheng Feng and Lang Tian and Huaishao Luo and Chaochao Li and Liangbo Zhou and Huan Zhang and Youzheng Wu and Xiaodong He},
+    year={2026},
+    eprint={2602.00702},
+    archivePrefix={arXiv},
+    primaryClass={cs.CV},
+    url={https://arxiv.org/abs/2602.00702}, 
+}
+            </code></pre>
+
+    <!-- 新增：右侧二维码 -->
+    <div style="
+        position: absolute;
+        top: 190px;
+        right: 10%;
+        width: 180px;
+        text-align: center;
+        margin-top: -100px;
+    ">
+        <img src="vis/QR-code.jpg" 
+             alt="QR Code for JoyAvatar model"
+             style="width: 100%; height: auto; border: 1px solid #444; border-radius: 2px;">
+        <div style="font-size: 18px; margin-top: 3px; color: #ccc;">Scan to enjoy by WeChat!</div>
+    </div>
+
+    </section>
+
+    <script>
+        // Add intersection observer to reveal footer links when scrolled into view
+        document.addEventListener('DOMContentLoaded', function() {
+            // Script content would go here
+        });
+    </script>
+</body>
+</html>
